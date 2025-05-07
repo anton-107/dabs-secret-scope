@@ -48,8 +48,6 @@ confirm_action() {
   done
 }
 
-# --- Main Script ---
-
 # 1. Validate the bundle configuration
 log_info "Validating Databricks bundle configuration from ${BUNDLE_FILE} using profile ${DATABRICKS_PROFILE}..."
 $DATABRICKS_CLI bundle validate --profile "${DATABRICKS_PROFILE}"
@@ -67,19 +65,3 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 log_info "Successfully deployed to 'dev' target."
-
-# 3. Deploy to 'prod' target (with confirmation)
-log_info "Preparing to deploy bundle to 'prod' target (CLI: ${DATABRICKS_CLI}, Profile: ${DATABRICKS_PROFILE})..."
-if confirm_action "Are you sure you want to deploy to the 'prod' target?"; then
-  log_info "Deploying bundle to 'prod' target (CLI: ${DATABRICKS_CLI}, Profile: ${DATABRICKS_PROFILE})..."
-  $DATABRICKS_CLI bundle deploy -t prod --profile "${DATABRICKS_PROFILE}"
-  if [ $? -ne 0 ]; then
-    log_error "Deployment to 'prod' target failed."
-    exit 1
-  fi
-  log_info "Successfully deployed to 'prod' target."
-else
-  log_info "Deployment to 'prod' target was cancelled by the user."
-fi
-
-log_info "Bundle deployment script finished."

@@ -16,5 +16,5 @@ targets:
     resources:
       secret_scopes:
         my_secret_scope:
-          name: dev-my-secrets
+          name: ${workspace.current_user.short_name}-my-secrets
     
