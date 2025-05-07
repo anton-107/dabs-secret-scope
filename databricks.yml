@@ -1,0 +1,20 @@
+bundle:
+  name: dabs-secret-scope
+
+resources:
+  secret_scopes:
+    my_secret_scope:
+      name: my-secrets
+
+# Defines the targets for this bundle.
+# Targets allow you to deploy the same bundle to different Databricks workspaces.
+targets:
+  dev:
+    # This target is for development purposes.
+    # It defaults to the current Databricks workspace.
+    default: true
+    resources:
+      secret_scopes:
+        my_secret_scope:
+          name: dev-my-secrets
+    
