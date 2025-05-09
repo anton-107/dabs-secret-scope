@@ -5,6 +5,30 @@ resources:
   secret_scopes:
     my_secret_scope:
       name: my-secrets
+  jobs:
+    example_python_job:
+      name: "example-python-job"
+      parameters:
+        - name: "scope_name"
+          default: ${resources.secret_scopes.my_secret_scope.name}
+      tasks:
+        - task_key: example_python_task
+          spark_python_task:
+            python_file: "jobs/example_spark_python_task.py"
+            parameters:
+              - --scope_name={{job.parameters.scope_name}}
+          # The key that references an environment spec in a job.
+          # https://docs.databricks.com/api/workspace/jobs/create#tasks-environment_key
+          environment_key: default
+      # A list of task execution environment specifications that can be referenced by tasks of this job.
+      environments:
+        - environment_key: default
+          # Full documentation of this spec can be found at:
+          # https://docs.databricks.com/api/workspace/jobs/create#environments-spec
+          spec:
+            client: '1'
+            dependencies:
+              - my-library
 
 # Defines the targets for this bundle.
 # Targets allow you to deploy the same bundle to different Databricks workspaces.
@@ -17,4 +41,7 @@ targets:
       secret_scopes:
         my_secret_scope:
           name: ${workspace.current_user.short_name}-my-secrets
+      jobs:
+        example_python_job:
+          name: "${workspace.current_user.short_name}-example-python-job"
     
